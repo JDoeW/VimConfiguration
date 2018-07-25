@@ -1,0 +1,59 @@
+set nocompatible " 必须
+filetype off     " required
+" vundle文件路径
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'VundleVim/Vundle.vim'
+Plugin 'valloric/youcompleteme'   " 自动补全
+Plugin 'trailing-whitespace'  " 增加尾部空格的显示
+Plugin 'commentary.vim'       " 注释多行
+Plugin 'Raimondi/delimitmate' " 括号引号等自动补全
+Plugin 'mattn/emmet-vim'
+
+" 所有插件必须放在此行的上面
+call vundle#end()
+filetype plugin indent on
+
+syntax enable          " 语法开启
+set nu                 " 行号
+set clipboard=unnamed  " 剪切板和vim内部内容互相使用
+set autoindent         " 自动缩进
+set tabstop=4          " tab width
+set softtabstop=4      " backspace delete indent
+set shiftwidth=4       " indent width
+set backspace=2
+
+" emmet configuration
+" enable just for html/css
+let g:user_emmet_install_global=0
+autocmd FileType html,css EmmetInstall
+" Note that the trailing, still needs to be entered, so the new keymap would
+" be <C-Z>,
+let g:user_emmet_leader_key='<C-Z>'
+
+" 新建.py，出现固定header
+" auto add pyhton header --start
+autocmd BufNewFile *.py 0r ~/.vim/vim_template/vim_python_header
+autocmd BufNewFile *.py ks|call FileName()|'s
+autocmd BufNewFile *.py ks|call CreatedTime()|'s
+
+fun FileName()
+	if line("$") > 10
+			let l = 10  " l是字母L 不是数字1
+	else
+			let l = line("$")
+	endif
+	exe "1," . l . "g/File Name:.*/s/File Name:.*/File Name: " .expand("%")
+    " 最前面是数字1，这里的File Name: 要和模板中一致
+endfun
+
+fun CreatedTime()
+	if line("$") > 10
+		let l = 10
+	else
+		let l = line("$")
+    endif
+	exe "1," . l . "g/Created Time:.*/s/Created Time:.*/Created Time: " .strftime("%Y-%m-%d %T")
+    " Create Time: 要和模板中一致
+endfun
+" auto add python header --end
